@@ -1,26 +1,47 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useState, useEffect } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { User } from "./api/session";
+import { Session } from "./api/session";
+import NavBar from "./component/NavBar";
+import WelcomePage from "./screens/WelcomePage";
+import AuctionIndexPage from "./screens/AuctionIndexPage";
+import AuctionNewPage from "./screens/AuctionNewPage";
+import AuctionShowPage from "./screens/AuctionShowPage";
+import SignIn from "./screens/SignIn";
+import AuthRoute from "./component/AuthRoute";
 function App() {
+  const [currentUser, setCurrentUser] = useState(null);
+  useEffect(() => {
+    User.current().then(data => {
+      setCurrentUser(data);
+    });
+  }, []);
+  const destroySession = () => {
+    Session.destroy().then(() => {
+      setCurrentUser(null);
+    });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+    <BrowserRouter>
+      <header>
+        <NavBar currentUser={currentUser} signOut={destroySession} />
       </header>
-    </div>
+      <div className="ui container App">
+        <Switch>
+          <Route exact path="/" component={WelcomePage} />
+          <Route exact path="/auctions" component={AuctionIndexPage} />
+          <AuthRoute
+            isAllowed={currentUser}
+            exact
+            path="/auctions/new"
+            component={AuctionNewPage}
+          />
+          <Route path="/auctions/:id" component={AuctionShowPage} />
+          <Route path="/sign_in" component={SignIn} />
+        </Switch>
+      </div>
+    </BrowserRouter>
   );
 }
-
 export default App;
