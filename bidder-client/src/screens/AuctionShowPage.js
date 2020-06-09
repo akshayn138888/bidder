@@ -28,7 +28,7 @@ const AuctionShowPage = props => {
         event.preventDefault();
         setError("Your Bid Must Be Higher Then The Last Bid");
       } else {
-        //event.preventDefault();
+        event.preventDefault();
 
         Bid.create(input).then(data => {
           if (data.status === 422) {

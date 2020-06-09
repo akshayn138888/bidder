@@ -19,25 +19,20 @@ const Bid1 = props => {
   }
   function handleSubmit(event) {
     //event.preventDefault();
-    if (auction.bids.length === 0) {
+    if (auction.bids) {
       let firstbid = Object.values(auction.bids)["0"].price;
 
       if (input.price < firstbid) {
-        event.preventDefault();
+        //event.preventDefault();
         setError("Your Bid Must Be Higher Then The Last Bid");
       } else {
-        event.preventDefault();
+        //event.preventDefault();
         Bid.create(input).then(data => {
           if (data.status === 422) {
             setError(data.error);
           } else {
-            let date = new Date();
-            setAuction(state => {
-              return {
-                ...state,
-                bid: state.bid.push({ price: input, created_at: date })
-              };
-            });
+            setAuction(data);
+
             console.log(data);
             setError("");
           }
