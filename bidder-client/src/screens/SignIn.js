@@ -3,6 +3,7 @@ import { Session } from "../api/session";
 const SignIn = props => {
   const [error, setError] = useState("");
   const [input, setInput] = useState({ email: "", password: "" });
+
   function handleChange(evt) {
     const value = evt.target.value;
     setInput({
@@ -16,6 +17,7 @@ const SignIn = props => {
       if (data.status === 404) {
         setError("Wrong Credentidals");
       } else {
+        props.getUser();
         props.history.push("/auctions");
       }
     });

@@ -9,18 +9,25 @@ import AuctionNewPage from "./screens/AuctionNewPage";
 import AuctionShowPage from "./screens/AuctionShowPage";
 import SignIn from "./screens/SignIn";
 import AuthRoute from "./component/AuthRoute";
+import { sign } from "crypto";
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
-  useEffect(() => {
-    User.current().then(data => {
-      setCurrentUser(data);
-    });
-  }, []);
+  const [signedIn, setSignedIn] = useState(false);
+
   const destroySession = () => {
     Session.destroy().then(() => {
       setCurrentUser(null);
+      setSignedIn(false);
     });
   };
+
+  function sing() {
+    setSignedIn(false);
+    User.current().then(data => {
+      setCurrentUser(data);
+      setSignedIn(true);
+    });
+  }
 
   return (
     <BrowserRouter>
@@ -38,7 +45,12 @@ function App() {
             component={AuctionNewPage}
           />
           <Route path="/auctions/:id" component={AuctionShowPage} />
-          <Route path="/sign_in" component={SignIn} />
+          <Route
+            path="/sign_in"
+            render={routerProps => (
+              <SignIn {...routerProps} getUser={sing}></SignIn>
+            )}
+          />
         </Switch>
       </div>
     </BrowserRouter>

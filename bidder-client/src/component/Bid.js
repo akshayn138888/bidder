@@ -32,7 +32,6 @@ const Bid1 = props => {
             setError(data.error);
           } else {
             setAuction(data);
-
             console.log(data);
             setError("");
           }
